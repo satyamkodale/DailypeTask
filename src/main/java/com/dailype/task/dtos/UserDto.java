@@ -21,12 +21,15 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserDto {
-	 
-	    private String fullName;
-	    private String mobNum;
-	    private String panNum;
-	    private String password;
+public class UserDto {   
+	    private String userId;	   
+	    private String userFullName;	    
+	    private String userEmail;	    
+	    private String userMobNum;	    
+	    private String userPanNum;	    
+	    private String userPassword;	    
+	    private LocalDateTime createdAt;
+	    private LocalDateTime updatedAt;
+	    private boolean isActive;
 	    private Manager manager;
-	   
 }

@@ -31,20 +31,24 @@ import lombok.Setter;
 public class User {
 
 	   @Id
-	    @GeneratedValue(strategy = GenerationType.AUTO)
-	    private UUID userId;
+//	    @GeneratedValue(strategy = GenerationType.AUTO)
+	    private String userId;
 	    
-	    @Column(nullable = false)
-	    private String fullName;
+	    @Column
+	    private String userFullName;
 	    
-	    @Column(nullable = false, unique = true)
-	    private String mobNum;
+	    @Column( unique = true)
+	    private String userEmail;
 	    
-	    @Column(nullable = false, unique = true)
-	    private String panNum;
+	    @Column( unique = true)
+	    private String userMobNum;
+	    
+	    @Column( unique = true)
+	    private String userPanNum;
+	    
 	    
 	    @Column( length = 500)
-	    private String password;
+	    private String userPassword;
 	    
 	    @ManyToOne
 	    @JoinColumn(name = "manager_id")

@@ -32,19 +32,20 @@ public class Manager {
 //    @GeneratedValue(strategy = GenerationType.AUTO)
     private String managerId;
     
-    @Column(nullable = false)
+    @Column
     private String managerName;
-    
-    @Column(nullable = false)
-    private LocalDateTime createdAt;
-    
     @Column( unique = true)
     private String managerEmail;
     
+    
+    @Column
+    private LocalDateTime createdAt;
+    
+
     @Column( length = 500)
     private String managerPassword;
 
-    @Column(nullable = true)
+    @Column
     private LocalDateTime updatedAt;
     
     @Column
