@@ -2,10 +2,16 @@ package com.dailype.task.services.impl;
 
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.dailype.task.dtos.UserDto;
@@ -15,6 +21,7 @@ import com.dailype.task.exceptions.ResourceNotFoundException;
 import com.dailype.task.repositories.ManagerRepository;
 import com.dailype.task.repositories.UserRepository;
 import com.dailype.task.services.UserService;
+
 
 
 @Service
@@ -65,5 +72,56 @@ public class UserServiceImpl implements UserService {
 	          return modelMapper.map(savedUser, UserDto.class);
 
 	    }
+	    
+	    
+	    //get all users 
+		public List<UserDto> getAllUsers()
+		{
+			List<User> users=userRepository.findAll();
+			List<UserDto> userDtos=users.stream()
+            .map(user -> modelMapper.map(user, UserDto.class))
+            .collect(Collectors.toList());
+			return userDtos;
+			
+		}
+		
+		//get user by mobile number 
+	    public UserDto getUserByMobNo(String userMobNum) {
+	        User user = userRepository.findByUserMobNum(userMobNum)
+	            .orElseThrow(() -> new ResourceNotFoundException("User not found with mobile number: " + userMobNum));
+	        return modelMapper.map(user, UserDto.class);
+	    }
+	    
+	    
+		//get by user id 
+	    public UserDto getUserById(String userId) {
+	        User user = userRepository.findById(userId)
+	            .orElseThrow(() -> new ResourceNotFoundException("User not found with mobile number: " + userId));
+	        return modelMapper.map(user, UserDto.class);
+	    }
+	    
+	    
+		//get user based on manager id 
+		
+		public List<UserDto> getAllUserOfManager(String managerId) {
+	        Manager manager = managerRepository.findById(managerId).orElseThrow(() -> new ResourceNotFoundException("Manager of given id not found !!"));
+	        
+	        List<User> users = userRepository.findByManager(manager);
+	        
+	        return users.stream()
+	                .map(user -> modelMapper.map(user, UserDto.class))
+	                .collect(Collectors.toList());
+
+	    }
+		
+		
+		//delete Mapping 
+		public void delete(String userId) 
+		{
+			 User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not found of given Id !!"));
+			 userRepository.delete(user);
+			    
+		}
+
 
 }
