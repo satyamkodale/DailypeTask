@@ -192,6 +192,36 @@ Message: "Bulk update can only update manager_id"
 
 
 
+8.Create Manager 
+-
+- Description: Creates a new manager .
+- HTTP Method: POST
+- Endpoint: /manager/create
+- Request Body: 
+```bash
+{
+    "managerName": "BulkUpdateManager2",
+    "managerEmail": "BulkUpdateManager2@gmail.com",
+    "managerPassword": "BulkUpdateManager2@123"
+   
+}
+```
+- Response:  JSON Response with success  
+
+
+9.Update manager's active status
+-
+- Description: Update manager active status .
+- HTTP Method: POST
+- Endpoint: /manager/update/e7837fd1-648f-453e-a2ea-fedb0d154e07
+```bash
+- Request Body:
+{
+    "isActive":"false"
+}
+```
+
+
 
 
 
