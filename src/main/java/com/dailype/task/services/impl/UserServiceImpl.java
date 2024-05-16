@@ -12,11 +12,16 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import com.dailype.task.dtos.ApiResponseMessage;
+import com.dailype.task.dtos.UpdateData;
+import com.dailype.task.dtos.UpdateUserData;
 import com.dailype.task.dtos.UserDto;
 import com.dailype.task.entities.Manager;
 import com.dailype.task.entities.User;
+import com.dailype.task.exceptions.BadRequestException;
 import com.dailype.task.exceptions.ResourceNotFoundException;
 import com.dailype.task.repositories.ManagerRepository;
 import com.dailype.task.repositories.UserRepository;
@@ -122,6 +127,72 @@ public class UserServiceImpl implements UserService {
 			 userRepository.delete(user);
 			    
 		}
+		
+		
+		
+		//bulk update 
+		public String updateUsers(UpdateUserData userData) {
+	        List<String> userIds = userData.getUser_ids();
+	        UpdateData updateData = userData.getUpdate_data();
+	        Manager manager=null;
+
+	        // Validate if user_ids exist in the database
+	        List<User> users = userRepository.findByUserIdIn(userIds);
+	        if (users.size() != userIds.size()) {
+	        	
+	        	throw new ResourceNotFoundException("Some user IDs do not exist");
+	        
+	        	
+//	            return "Some user IDs do not exist";
+	            
+	        }
+
+	        // Bulk update can only contain manager_id
+	        if (updateData.getFull_name() != null || updateData.getMob_num() != null || updateData.getPan_num() != null) {
+	        	throw new BadRequestException("Bulk update can only update manager_id");
+	           // return "Bulk update can only update manager_id";
+	        }
+
+	        // Validate manager_id if present
+	        if (updateData.getManager_id() != null) {
+	          manager= managerRepository.findById(updateData.getManager_id()).orElseThrow(() -> new ResourceNotFoundException("Manager not found"));
+	        }
+
+	        // Update user data
+	        for (User user : users) {
+	            if (updateData.getManager_id() != null) {
+	                // Handle manager update
+	                if (user.getManager() != null) {
+	                    // Mark current entry as inactive
+	                    user.setActive(false);
+	                    userRepository.save(user);
+
+	                    // Create new entry with updated manager_id
+	                    User newUser = new User();
+	                    newUser.setUserId(UUID.randomUUID().toString());
+	                    newUser.setUserFullName(user.getUserFullName());
+	                    newUser.setUserMobNum(user.getUserMobNum());
+	                    newUser.setUserPanNum(user.getUserPanNum());
+	                    newUser.setUserPassword(user.getUserPassword());
+	                    newUser.setManager(manager);
+	                    newUser.setCreatedAt(user.getCreatedAt());
+	                    newUser.setUpdatedAt(LocalDateTime.now());
+	                    newUser.setActive(true);
+	                    userRepository.delete(user);
+	                    userRepository.save(newUser);
+	                } else {
+	                    // Update manager_id for the first time
+	                    user.setManager(manager);
+	                    user.setUpdatedAt(LocalDateTime.now());
+	                    userRepository.save(user);
+	                }
+	            }
+	        }
+
+	        return "Users updated successfully";
+	    }
+	
+		
 
 
 }

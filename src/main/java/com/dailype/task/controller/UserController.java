@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.dailype.task.dtos.ApiResponseMessage;
 import com.dailype.task.dtos.ManagerDto;
+import com.dailype.task.dtos.UpdateUserData;
 import com.dailype.task.dtos.UserDto;
 import com.dailype.task.services.ManagerService;
 import com.dailype.task.services.UserService;
@@ -94,6 +95,17 @@ public class UserController {
 	        return new ResponseEntity<>(responseMessage, HttpStatus.OK);
 
 	    }
+	    
+	    //bulk update user 
+	    @PostMapping("/update_user")
+	    public ResponseEntity<ApiResponseMessage> updateUser(@RequestBody UpdateUserData userData) {
+	        String message = userService.updateUsers(userData);
+	        ApiResponseMessage responseMessage = ApiResponseMessage.builder().message(message).status(HttpStatus.OK).success(true).build();
+	        return new ResponseEntity<>(responseMessage, HttpStatus.OK);
+	        
+	    }
+	    
+	    
 
 	    
 }
