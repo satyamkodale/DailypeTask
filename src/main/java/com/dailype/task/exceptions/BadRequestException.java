@@ -6,7 +6,7 @@ import lombok.Builder;
 public class BadRequestException extends  RuntimeException{
 	
 	 public BadRequestException(){
-	        super("Resource not found !!");
+	        super("Bad Request Exception!!");
 	    }
 
 	    public BadRequestException(String message){
